@@ -140,8 +140,22 @@
                  (fn [gif] (some #{tag} (:tags gif)))))))
 
 (defn all-tags
-  "Fetches all tags from a DB"
+  "Fetches all tags from a DB, sorted by frequency."
   [db]
-  (->> db :gifs
-       (map :tags)
-       distinct))
+  (->> db :gifs vals
+       (mapcat :tags)
+       frequencies
+       (sort-by val)
+       (map key)))
+
+(defn starts-with?
+  "Does the given string start with s?"
+  [^String s ^String str]
+  (and (<= (.length s) (.length str))
+       (= s (subs str 0 (.length s)))))
+
+(defn autocomplete-tag
+  "Gives suggested autocompletes for a partial tag string, sorted by frequency."
+  [db tag]
+  (->> (all-tags db)
+       (filter (partial starts-with? tag))))

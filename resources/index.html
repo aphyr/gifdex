@@ -3,9 +3,13 @@
     <title>Gifs!</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/caret/1.3.4/jquery.caret.min.js" /></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tag-editor/1.0.20/jquery.tag-editor.min.js" /></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/caret/1.3.4/jquery.caret.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tag-editor/1.0.20/jquery.tag-editor.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/tag-editor/1.0.20/jquery.tag-editor.min.css" charset="UTF-8" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" charset="UTF-8" />
 
     <style>
       img {
@@ -137,6 +141,12 @@
         $(tags).tagEditor({initialTags: image.tags,
                            maxLength: 500,
                            placeholder: "enter tags...",
+                           autocomplete: {
+                             delay: 0,
+                             minlength: 0,
+                             source: function(req, res) {
+                               get("/autocomplete/tags/" + req.term, res);
+                             }},
                            onChange: function(field, editor, tags) {
                              image.tags = tags;
                              saveGif(image);
@@ -186,9 +196,8 @@
         }
       }
 
-      // Searching
-      $("#search input").keyup(function(e) {
-        var tag = e.currentTarget.value;
+      function search(tag) {
+        console.log("searching for", tag);
         var url;
         if (tag === "") {
           url = "/gifs";
@@ -205,10 +214,25 @@
             show(res);
           }
         });
+      }
+
+      // Searching
+      searchInput = $('#search input');
+      searchInput.autocomplete({
+        delay: 0,
+        source: function(req, res) {
+          get("/autocomplete/tags/" + req.term, res);
+        },
+        select: function(e, ui) {
+          console.log(ui);
+          search(ui.item.value);
+        }
+      });
+      searchInput.keyup(function(e) {
       });
 
       // Panning
-      $('html').keydown(function(e) {
+      $('document').keydown(function(e) {
         if ((e.key === "ArrowDown" ||
              e.key === 'ArrowRight')
             && imageIndex < (images.length - 1)) {

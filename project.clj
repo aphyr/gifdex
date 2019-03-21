@@ -18,4 +18,6 @@
                  [bk/ring-gzip "0.2.0"]
                  [dom-top "1.0.0"]]
   :main gifdex.core
-  :repl-options {:init-ns gifdex.core})
+  :repl-options {:init-ns gifdex.core}
+  :profiles {:uberjar {:aot       :all
+                       :jvm-opts  ["-Dclojure.compiler.direct-linking=true"]}})

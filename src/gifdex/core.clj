@@ -1,4 +1,5 @@
 (ns gifdex.core
+  (:gen-class)
   (:require [aleph.http :as http]
             [clojure.data.codec.base64 :as b64]
             [clojure.edn :as edn]
@@ -106,6 +107,11 @@
             (db/transact! db db/update-gif gif')
             (json-response gif'))))
 
+(defn autocomplete-tag
+  "Returns completion results for a partial tag."
+  [db t]
+  (json-response (take 12 (db/autocomplete-tag @(:state db) t))))
+
 (defn home
   []
   {:status  200
@@ -123,10 +129,11 @@
             req (assoc req :uri uri, :path path, :ext ext)]
         ; (info :req req)
         (match [path ext]
-               [[] nil]                   (home)
-               [["favicon"] "ico"]        err-404
-               [["tags" t "gifs"] nil]    (gifs-tagged db t)
-               [["gifs"] nil]             (all-gifs db)
+               [[] nil]                         (home)
+               [["favicon"] "ico"]              err-404
+               [["autocomplete" "tags" t] nil]  (autocomplete-tag db t)
+               [["tags" t "gifs"] nil]          (gifs-tagged db t)
+               [["gifs"] nil]                   (all-gifs db)
 
                [["gifs" "meta" & more] _]
                (gif db (assoc req :path more))
