@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Gifdex opener
+Exec=gifdex-open %u
+StartupNotify=false
+MimeType=x-scheme-handler/gifdex

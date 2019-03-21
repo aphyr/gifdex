@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [[ "$1" == "gifdex:"* ]]; then
+  ref=${1#gifdex://}
+  ref=$(python -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])" "$ref")
+  eog "/home/aphyr/images/gifs/$ref"
+else
+  xdg-open "$1"
+fi
