@@ -4,7 +4,7 @@ A local gif indexing program. You've got a directory full of gifs! This is a
 little web app that helps you browse and tag them. It stores the tags in a
 local edn file. It's a giant hack and is presented completely as-is.
 
-![doc/screenshot.jpg](A screenshot of the user interface showing gifs).
+![A screenshot of the user interface](doc/screenshot.jpg).
 
 ## Usage
 
