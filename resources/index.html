@@ -9,8 +9,8 @@
 
     <style>
       img {
-        height: 200px;
-        margin: 1em;
+        height: 100px;
+        margin: 0.5em;
       }
 
       #search {
@@ -45,6 +45,8 @@
   <body>
     <div id="search">
       <input></input>
+    </div>
+    <div id="meta">
     </div>
     <div id="focus">
     </div>
@@ -141,6 +143,11 @@
       function show(imgs) {
         // Update global state
         images = imgs;
+
+        // Metadata
+        var meta = document.getElementById("meta");
+        empty(meta);
+        meta.innerHTML = imgs.length + " gifs ";
 
         // Wipe container
         var container = document.getElementById("images");
