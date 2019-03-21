@@ -57,6 +57,10 @@
 
       var images = [];
       var imageIndex = 0;
+      // We use these to ensure search queries are rendered in order, even
+      // though their results come back out of order.
+      var nextSearchIndex = 0;
+      var appliedSearchIndex = -1;
 
       function empty(element) {
         element.querySelectorAll("*").forEach(function(elem) {
@@ -185,11 +189,22 @@
       // Searching
       $("#search input").keyup(function(e) {
         var tag = e.currentTarget.value;
+        var url;
         if (tag === "") {
-          get("/gifs", show);
+          url = "/gifs";
         } else {
-          get("/tags/" + tag + '/gifs', show);
+          url = "/tags/" + tag + '/gifs';
         }
+
+        // Make sure we apply updates in order!
+        var mySearchIndex = nextSearchIndex;
+        nextSearchIndex++;
+
+        get(url, function(res) {
+          if (appliedSearchIndex < mySearchIndex) {
+            show(res);
+          }
+        });
       });
 
       // Panning

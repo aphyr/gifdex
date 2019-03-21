@@ -40,7 +40,6 @@
   (let [db-file (io/file db-file)
         db-path (.toAbsolutePath (.toPath db-file))]
     (locking save-lock
-      (info :parent (.getParent db-path))
       (let [tmp (Files/createTempFile
                   (.getParent db-path) "gifdex" ".edn"
                   (into-array FileAttribute
@@ -58,7 +57,6 @@
               (pprint db)))
           ; Move tmpfile on top of db
           (io/make-parents (.getCanonicalPath db-file))
-          (info "rename" tmp db-file)
           (Files/move tmp db-path
                       (into-array CopyOption
                                   [StandardCopyOption/ATOMIC_MOVE
@@ -84,7 +82,7 @@
   "Takes a DB record and applies the given function to its state."
   [db f & args]
   (let [db' (apply swap! (:state db) f args)]
-    (info :db (with-out-str (pprint (apply swap! (:state db) f args))))
+    ; (info :db (with-out-str (pprint (apply swap! (:state db) f args))))
     (save-db! (:db-file db) db')))
 
 (defn get-gif
