@@ -143,7 +143,8 @@
   "Fetches all tags from a DB, sorted by frequency."
   [db]
   (->> db :gifs vals
-       (mapcat :tags)
+       (map :tags)
+       (mapcat (fn [tags] (or (seq tags) ["untagged"])))
        frequencies
        (sort-by val)
        (map key)))
