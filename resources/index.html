@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" charset="UTF-8" />
 
     <style>
-      img {
+      img, video {
         height: 100px;
         margin: 0.5em;
       }
@@ -34,7 +34,7 @@
         min-height: 400px;
       }
 
-      #focus img {
+      #focus img, #focus video {
         height: 380px;
         display: block;
         margin: 0 auto;
@@ -102,6 +102,30 @@
         });
       }
 
+      // Returns an element for showing a single image
+      function imageElem(image) {
+        var elem;
+        console.log("image name", image.name);
+        console.log(image.name.search(/\.mp4$/));
+        if (image.name.search(/\.mp4$/) != -1) {
+          console.log("mp4");
+          // MP4
+          elem = document.createElement("video");
+          elem.setAttribute("autoplay", true);
+          elem.setAttribute("loop", true);
+          elem.setAttribute("muted", true);
+          elem.setAttribute("inline", true);
+          var source = document.createElement("source");
+          source.setAttribute("src", "/gifs/" + image.name);
+          source.setAttribute("type", "video/mp4");
+          elem.appendChild(source);
+        } else {
+          // Regular image
+          elem = document.createElement("img");
+          elem.setAttribute("src", "/gifs/" + image.name);
+        }
+        return elem;
+      }
 
       function focus(i) {
         var elem = document.getElementById("focus");
@@ -112,8 +136,7 @@
 
         // Add image
         var image = images[i];
-        var img = document.createElement("img");
-        img.setAttribute("src", "/gifs/" + image.name);
+        var img = imageElem(image);
         elem.appendChild(img);
 
         // Add tags
@@ -170,10 +193,8 @@
         // Add images
         var i = 0;
         images.forEach(function(image) {
-          var elem = document.createElement("img");
+          var elem = imageElem(image);
           var image_i = i;
-          // elem.setAttribute("src", image.data);
-          elem.setAttribute("src", "/gifs/" + image.name);
 
           elem.addEventListener("click", function(e) {
             focus(image_i);
